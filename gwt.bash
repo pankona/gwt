@@ -30,4 +30,5 @@ gwt() {
   mkdir -p "$(dirname "$target_dir")"
 
   git worktree add -b "$branch_name" "$target_dir" "$current_branch"
+  echo "$target_dir"
 }
