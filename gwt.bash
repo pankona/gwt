@@ -1,4 +1,4 @@
-gwt() {
+gwtadd() {
   local branch_name="$1"
   local worktree_base="${GWT_DIR:-$HOME/worktrees}"
   local current_branch=$(git branch --show-current)
