@@ -32,3 +32,19 @@ gwt() {
   git worktree add -b "$branch_name" "$target_dir" "$current_branch"
   echo "$target_dir"
 }
+
+gwtcd() {
+  local worktree_base="${GWT_DIR:-$HOME/worktrees}"
+  
+  # worktree_base配下のディレクトリを検索してfzfで選択
+  local selected_dir
+  selected_dir=$(find "$worktree_base" -type d -name ".git" -prune -o -type d -print 2>/dev/null | \
+    grep -v "\.git$" | \
+    sed "s|^$worktree_base/||" | \
+    grep -v "^$" | \
+    fzf --height=40% --reverse --prompt="Select worktree: ")
+  
+  if [[ -n "$selected_dir" ]]; then
+    cd "$worktree_base/$selected_dir"
+  fi
+}
