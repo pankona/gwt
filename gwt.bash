@@ -7,12 +7,18 @@ gwt() {
   local remote_url=$(git remote get-url origin)
   local host_and_path
 
-  if [[ "$remote_url" =~ ^git@([^:]+):(.*)\.git$ ]]; then
-    # SSH形式: git@host:user/repo.git
-    host_and_path="${BASH_REMATCH[1]}/${BASH_REMATCH[2]}"
-  elif [[ "$remote_url" =~ ^https?://([^/]+)/(.*)\.git$ ]]; then
-    # HTTPS形式: https://host/user/repo.git
-    host_and_path="${BASH_REMATCH[1]}/${BASH_REMATCH[2]}"
+  if [[ "$remote_url" =~ ^git@([^:]+):(.*)$ ]]; then
+    # SSH形式: git@host:user/repo[.git]
+    local path="${BASH_REMATCH[2]}"
+    # .git 拡張子を削除
+    path="${path%.git}"
+    host_and_path="${BASH_REMATCH[1]}/${path}"
+  elif [[ "$remote_url" =~ ^https?://([^/]+)/(.*)$ ]]; then
+    # HTTPS形式: https://host/user/repo[.git]
+    local path="${BASH_REMATCH[2]}"
+    # .git 拡張子を削除
+    path="${path%.git}"
+    host_and_path="${BASH_REMATCH[1]}/${path}"
   else
     echo "Error: Unsupported remote URL format: $remote_url" >&2
     return 1
