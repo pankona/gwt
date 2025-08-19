@@ -36,12 +36,14 @@ gwtadd() {
 gwtcd() {
   local worktree_base="${GWT_DIR:-$HOME/worktrees}"
   
-  # worktree_base配下のディレクトリを検索してfzfで選択
+  # git worktreeのトップディレクトリのみを検索してfzfで選択
   local selected_dir
-  selected_dir=$(find "$worktree_base" -type d -name ".git" -prune -o -type d -print 2>/dev/null | \
-    grep -v "\.git$" | \
+  selected_dir=$(git worktree list --porcelain | \
+    grep "^worktree " | \
+    sed "s|^worktree ||" | \
+    grep "^$worktree_base" | \
     sed "s|^$worktree_base/||" | \
-    grep -v "^$" | \
+    grep "/.*/.*" | \
     fzf --height=40% --reverse --prompt="Select worktree: ")
   
   if [[ -n "$selected_dir" ]]; then
